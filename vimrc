@@ -111,6 +111,104 @@ set nu
 map <ScrollWheelDown> <C-E>
 map <ScrollWheelUp> <C-Y>
 
+" Go to tab by number
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+noremap <C-Right> gt<cr>
+noremap <C-Left> gT<cr>
+
+"-----------------------美化标签栏-----------------------
+"定义颜色
+hi SelectTabLine term=Bold cterm=Bold gui=Bold ctermbg=None
+hi SelectPageNum cterm=None ctermfg=Red ctermbg=None
+hi SelectWindowsNum cterm=None ctermfg=DarkCyan ctermbg=None
+
+hi NormalTabLine cterm=Underline ctermfg=Black ctermbg=LightGray
+hi NormalPageNum cterm=Underline ctermfg=DarkRed ctermbg=LightGray
+hi NormalWindowsNum cterm=Underline ctermfg=DarkMagenta ctermbg=LightGray
+
+function! MyTabLabel(n, select)
+    let label = ''
+    let buflist = tabpagebuflist(a:n)
+    for bufnr in buflist
+        if getbufvar(bufnr, "&modified")
+            let label = '+' 
+            break
+        endif
+    endfor
+
+    let winnr = tabpagewinnr(a:n)
+    let name = bufname(buflist[winnr - 1]) 
+    if name == ''
+        "为没有名字的文档设置个名字
+        if &buftype == 'quickfix'
+            let name = '[Quickfix List]'
+        else
+            let name = '[No Name]'
+        endif
+    else
+        "只取文件名
+        let name = fnamemodify(name, ':t')
+    endif
+
+    let label .= name
+    return label
+endfunction
+
+function! MyTabLine()
+    let s = ''
+    for i in range(tabpagenr('$'))
+        " 选择高亮
+        let hlTab = ''
+        let select = 0 
+        if i + 1 == tabpagenr()
+            let hlTab = '%#SelectTabLine#'
+            " 设置标签页号 (用于鼠标点击)
+            let s .= hlTab . "[%#SelectPageNum#%T" . (i + 1) . hlTab
+            let select = 1
+        else
+            let hlTab = '%#NormalTabLine#'
+            " 设置标签页号 (用于鼠标点击)
+            let s .= hlTab . "[%#NormalPageNum#%T" . (i + 1) . hlTab
+        endif
+
+        " MyTabLabel() 提供标签
+        let s .= ' %<%{MyTabLabel(' . (i + 1) . ', ' . select . ')} '
+
+        "追加窗口数量
+        let wincount = tabpagewinnr(i + 1, '$')
+        if wincount > 1
+            if select == 1
+                let s .= "%#SelectWindowsNum#" . wincount
+            else
+                let s .= "%#NormalWindowsNum#" . wincount
+            endif
+        endif
+        let s .= hlTab . "]"
+    endfor
+
+    " 最后一个标签页之后用 TabLineFill 填充并复位标签页号
+    let s .= '%#TabLineFill#%T'
+
+    " 右对齐用于关闭当前标签页的标签
+    if tabpagenr('$') > 1
+        let s .= '%=%#TabLine#%999XX'
+    endif
+
+    return s
+endfunction
+set tabline=%!MyTabLine()
+
+
+
 " 默认的vimrc
 
 " The default vimrc file.
