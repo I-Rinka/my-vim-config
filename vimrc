@@ -1,63 +1,48 @@
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
 
-" Vundle 插件配置
-set nocompatible              " be iMproved, required
-filetype off                  " required
-
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-Plugin 'mg979/vim-visual-multi' " 多行光标编辑
-Plugin 'vim-airline/vim-airline' " 显示增强
-Plugin 'ycm-core/YouCompleteMe' " 补全插件
+" Make sure you use single quotes
 
 " 文件树状panel
-Plugin 'preservim/nerdtree'
-Plugin 'ryanoasis/vim-devicons' " nerdTree上显示图标，注意需要nerdFont进行支持
-Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons' " nerdTree上显示图标，注意需要nerdFont进行支持
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
-Plugin 'tpope/vim-fugitive'
-" Plugin 'terryma/vim-multiple-cursors'
-" Plugin 'preservim/nerdcommenter'
-" Plugin 'junegunn/fzf.vim'
+Plug 'mg979/vim-visual-multi' " 多行光标编辑
+Plug 'vim-airline/vim-airline' " 显示增强
+" Plin 'ycm-core/YouCompleteMe' " 补全插件
+Plug  'neoclide/coc.nvim', {'branch': 'release'}
+Plug  'honza/vim-snippets'
 
-" Plugin 'scrooloose/nerdtree-project-plugin'
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-" Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Install L9 and avoid a Naming conflict if you've already installed a
-" different version somewhere else.
-" Plugin 'ascenator/L9', {'name': 'newL9'}
+Plug 'tpope/vim-fugitive' " Git插件，可以更简洁的使用 :Git commit
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } " fuzzy finder. 这个插件的作用超越vim，可以在整个终端使用
 
+" Multiple Plug commands can be written in a single line using | separators
+" Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+Plug 'fatih/vim-go', { 'tag': '*' } " Go 插件，可以使用：GoBuild等函数
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align' " 对齐插件，可以对齐表格之类的
+
+" Any valid git URL is allowed
+" 在Vim中可以打开github
+" Plug 'https://github.com/junegunn/vim-github-dashboard.git'  "
+
+" Unmanaged plugin (manually installed and updated)
+
+" Initialize plugin system
+call plug#end()
 
 " 插件配置
 
@@ -70,7 +55,18 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 
 let g:VM_mouse_mappings = 1
 
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
 
 " vim 原生配置
 " 让光标可以复合直觉地移动到最后一个字符后面
@@ -89,19 +85,19 @@ map H ^
 map ： :
 
 " 按住ctrl键后 hjkl可以移动一行
-nnoremap <C-j> :m .+1<CR>==
-nnoremap <C-k> :m .-2<CR>==
-inoremap <C-j> <Esc>:m .+1<CR>==gi
-inoremap <C-k> <Esc>:m .-2<CR>==gi
-" 按住ctrl键后 hjkl可以移动选中的区块
-vnoremap <C-j> :m '>+1<CR>gv=gv
-vnoremap <C-k> :m '<-2<CR>gv=gv
+" nnoremap <C-J> :m .+1<CR>==
+" nnoremap <C-K> :m .-2<CR>==
+" inoremap <C-J> <Esc>:m .+1<CR>==gi
+" inoremap <C-K> <Esc>:m .-2<CR>==gi
+" " 按住ctrl键后 hjkl可以移动选中的区块
+" vnoremap <C-J> :m '>+1<CR>gv=gv
+" vnoremap <C-K> :m '<-2<CR>gv=gv
 
 " 缩进设置，tab键=4个空格
 set ts=4 sw=4
 
 " 拼写检测
-set spell spelllang=en_us
+" set spell spelllang=en_us
 
 " 当前行高亮
 set cursorline

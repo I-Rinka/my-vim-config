@@ -5,7 +5,8 @@ Realized Functions:
 
 * Open Directory as an object tree in side panel (NerdTree)
 	* eg. Typing `vim .` will open current directory. Then you can see the directory structure meanwhile the cursor is on the left panel so you can browse the directory to open the file. When you press `:q` the NerdTree will automatically close.
-* Complete function (YouCompleteMe)
+* ~Complete function (YouCompleteMe)~
+* Good support for language complement by using CoC. Provides snippets and complement generated from language server protocal.
 * Better mouse support
 
 TO DO:
@@ -14,19 +15,19 @@ TO DO:
 - [ ] Move line like vscode press alt+⬆️ / alt+⬇️
 - [ ] Comment short cut. I hope one keys' combination could comment all kind of files as I'm almost a full-stacked programmer. 
 
-YCM SetUp:
-
-```
-sudo apt install mono-complete golang nodejs default-jdk npm
-sudo apt install build-essential cmake3 python3-dev
-cd ~/.vim/bundle/YouCompleteMe
-python3 install.py
-```
 
 ## Install
 
 ```bash
 bash ./setup
-# or
-bash ./setup --install-ycm # if you want to install YouCompleteMe plugin at the same time. It might not work on differernt operating system. 
+```
+
+Coc config:
+
+Enter vim, then typing `:CocInstall coc-highlight` etc.
+
+```vim
+:CocInstall coc-highlight " 默认高亮
+:CocInstall coc-snippets " 补全
+:CocInstall coc-tsserver " js的language server
 ```
