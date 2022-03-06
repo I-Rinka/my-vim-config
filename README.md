@@ -11,9 +11,11 @@ Realized Functions:
 
 TO DO:
 
-- [ ] Multi cursor edit. It should be easy to use as visual studio code
-- [ ] Move line like vscode press alt+⬆️ / alt+⬇️
+- [X] Multi cursor edit. It should be easy to use as visual studio code
+- [X] Move line like vscode press alt+⬆️ / alt+⬇️
+  - You can do it by using `ctrl` + `jk`
 - [ ] Comment short cut. I hope one keys' combination could comment all kind of files as I'm almost a full-stacked programmer. 
+- [ ] Structure complete
 
 
 ## Install
