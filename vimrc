@@ -1,3 +1,5 @@
+
+" Vundle 插件配置
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -13,16 +15,21 @@ Plugin 'VundleVim/Vundle.vim'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
-Plugin 'ycm-core/YouCompleteMe'
-" Plugin 'terryma/vim-multiple-cursors'
-" Plugin 'preservim/nerdcommenter'
-Plugin 'vim-airline/vim-airline'
-" Plugin 'junegunn/fzf.vim'
+Plugin 'mg979/vim-visual-multi' " 多行光标编辑
+Plugin 'vim-airline/vim-airline' " 显示增强
+Plugin 'ycm-core/YouCompleteMe' " 补全插件
+
+" 文件树状panel
 Plugin 'preservim/nerdtree'
-Plugin 'ryanoasis/vim-devicons'
+Plugin 'ryanoasis/vim-devicons' " nerdTree上显示图标，注意需要nerdFont进行支持
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
+
+Plugin 'tpope/vim-fugitive'
+" Plugin 'terryma/vim-multiple-cursors'
+" Plugin 'preservim/nerdcommenter'
+" Plugin 'junegunn/fzf.vim'
+
 " Plugin 'scrooloose/nerdtree-project-plugin'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
@@ -49,27 +56,10 @@ filetype plugin indent on    " required
 " :PluginSearch foo - searches for foo; append `!` to refresh local cache
 " :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
 "
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-"
-" let g:multi_cursor_next_key='<C-n>'
-" 
-" let g:multi_cursor_prev_key='<C-p>'
-" 
-" let g:multi_cursor_skip_key='<C-x>'
-" 
-" let g:multi_cursor_quit_key='<Esc>'
 
-set ts=4 sw=4
 
-set spell spelllang=en_us
 
-set cursorline
-
-set relativenumber
-
-map <ScrollWheelDown> <C-E>
-map <ScrollWheelUp> <C-Y>
+" 插件配置
 
 " Start NERDTree when Vim starts with a directory argument.
 autocmd StdinReadPre * let s:std_in=1
@@ -78,13 +68,54 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in
 " Close the tab if NERDTree is the only window remaining in it.
 autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
+let g:VM_mouse_mappings = 1
 
 
 
+" vim 原生配置
+" 让光标可以复合直觉地移动到最后一个字符后面
+set ve+=onemore
 
+" 让粘贴的位置更符合直觉
+map p P
 
+" shift+L移动到行尾
+map L $l
 
+" shift+H移动到行首
+map H ^
 
+" 当输入中文时，中文的冒号也会打开命令模式
+map ： :
+
+" 按住ctrl键后 hjkl可以移动一行
+nnoremap <C-j> :m .+1<CR>==
+nnoremap <C-k> :m .-2<CR>==
+inoremap <C-j> <Esc>:m .+1<CR>==gi
+inoremap <C-k> <Esc>:m .-2<CR>==gi
+" 按住ctrl键后 hjkl可以移动选中的区块
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
+
+" 缩进设置，tab键=4个空格
+set ts=4 sw=4
+
+" 拼写检测
+set spell spelllang=en_us
+
+" 当前行高亮
+set cursorline
+
+" 设置相对行号，这样可以方便数字+重复操作
+set relativenumber
+" 设置绝对行号，这样可以知道当前行
+set nu
+
+" 让鼠标翻滚不要太快
+map <ScrollWheelDown> <C-E>
+map <ScrollWheelUp> <C-Y>
+
+" 默认的vimrc
 
 " The default vimrc file.
 "
