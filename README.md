@@ -8,6 +8,7 @@ Realized Functions:
 * ~Complete function (YouCompleteMe)~
 * Good support for language complement by using CoC. Provides snippets and complement generated from language server protocal.
 * Better mouse support
+* Beautified tabs
 
 TO DO:
 

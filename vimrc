@@ -85,13 +85,14 @@ map H ^
 map ： :
 
 " 按住ctrl键后 hjkl可以移动一行
-" nnoremap <C-J> :m .+1<CR>==
-" nnoremap <C-K> :m .-2<CR>==
-" inoremap <C-J> <Esc>:m .+1<CR>==gi
-" inoremap <C-K> <Esc>:m .-2<CR>==gi
-" " 按住ctrl键后 hjkl可以移动选中的区块
-" vnoremap <C-J> :m '>+1<CR>gv=gv
-" vnoremap <C-K> :m '<-2<CR>gv=gv
+nnoremap <C-J> :m .+1<CR>==
+nnoremap <C-K> :m .-2<CR>==
+inoremap <C-J> <Esc>:m .+1<CR>==gi
+inoremap <C-K> <Esc>:m .-2<CR>==gi
+" 按住ctrl键后 hjkl可以移动选中的区块
+vnoremap <C-J> :m '>+1<CR>gv=gv
+vnoremap <C-K> :m '<-2<CR>gv=gv
+
 
 " 缩进设置，tab键=4个空格
 set ts=4 sw=4
