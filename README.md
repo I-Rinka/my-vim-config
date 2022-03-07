@@ -15,9 +15,10 @@ TO DO:
 - [X] Multi cursor edit. It should be easy to use as visual studio code
 - [X] Move line like vscode press alt+⬆️ / alt+⬇️
   - You can do it by using `ctrl` + `jk`
-- [ ] Comment short cut. I hope one keys' combination could comment all kind of files as I'm almost a full-stacked programmer. 
+- [X] Comment short cut. I hope one keys' combination could comment all kind of files as I'm almost a full-stacked programmer. 
 - [X] Structure complete
-
+- [ ] Preview
+- [ ] Git modify hint in editor
 
 ## Install
 
@@ -30,7 +31,5 @@ Coc config:
 Enter vim, then typing `:CocInstall coc-highlight` etc.
 
 ```vim
-:CocInstall coc-highlight " 默认高亮
-:CocInstall coc-snippets " 补全
-:CocInstall coc-tsserver " js的language server
+:CocInstall coc-highlight coc-snippets coc-tsserver coc-vetur coc-prettier coc-eslint coc-highlight coc-pairs coc-lightbulb coc-ltex coc-lists
 ```

@@ -15,11 +15,12 @@ Plug 'ryanoasis/vim-devicons' " nerdTree上显示图标，注意需要nerdFont�
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
-Plug 'mg979/vim-visual-multi' " 多行光标编辑
+Plug 'mg979/vim-visual-multi', {'branch': 'master'} " 多行光标编辑
 Plug 'vim-airline/vim-airline' " 显示增强
 " Plin 'ycm-core/YouCompleteMe' " 补全插件
 Plug  'neoclide/coc.nvim', {'branch': 'release'}
 Plug  'honza/vim-snippets'
+Plug 'preservim/nerdcommenter'
 
 Plug 'tpope/vim-fugitive' " Git插件，可以更简洁的使用 :Git commit
 
@@ -27,7 +28,7 @@ Plug 'tpope/vim-fugitive' " Git插件，可以更简洁的使用 :Git commit
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } " fuzzy finder. 这个插件的作用超越vim，可以在整个终端使用
 
 " Multiple Plug commands can be written in a single line using | separators
-" Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+ "Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go', { 'tag': '*' } " Go 插件，可以使用：GoBuild等函数
@@ -55,6 +56,15 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 
 let g:VM_mouse_mappings = 1
 
+let g:NERDCreateDefaultMappings = 0
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+nmap <Leader>/ <Plug>NERDCommenterToggle
+xmap <Leader>/ <Plug>NERDCommenterToggle
+
+" coc
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
@@ -67,6 +77,64 @@ function! s:check_back_space() abort
 endfunction
 
 let g:coc_snippet_next = '<tab>'
+
+command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+map <leader>F :Prettier<CR>
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+
+" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
+" unicode characters in the file autoload/float.vim
+set encoding=utf-8
+
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
 
 " vim 原生配置
 " 让光标可以复合直觉地移动到最后一个字符后面
@@ -126,6 +194,9 @@ noremap <leader>0 :tablast<cr>
 noremap <C-Right> gt<cr>
 noremap <C-Left> gT<cr>
 
+" 鼠标拖动
+set ttymouse=sgr
+
 "-----------------------美化标签栏-----------------------
 "定义颜色
 hi SelectTabLine term=Bold cterm=Bold gui=Bold ctermbg=None
@@ -137,74 +208,74 @@ hi NormalPageNum cterm=Underline ctermfg=DarkRed ctermbg=LightGray
 hi NormalWindowsNum cterm=Underline ctermfg=DarkMagenta ctermbg=LightGray
 
 function! MyTabLabel(n, select)
-    let label = ''
-    let buflist = tabpagebuflist(a:n)
-    for bufnr in buflist
-        if getbufvar(bufnr, "&modified")
-            let label = '+' 
-            break
-        endif
-    endfor
+	let label = ''
+	let buflist = tabpagebuflist(a:n)
+	for bufnr in buflist
+		if getbufvar(bufnr, "&modified")
+			let label = '+' 
+			break
+		endif
+	endfor
 
-    let winnr = tabpagewinnr(a:n)
-    let name = bufname(buflist[winnr - 1]) 
-    if name == ''
-        "为没有名字的文档设置个名字
-        if &buftype == 'quickfix'
-            let name = '[Quickfix List]'
-        else
-            let name = '[No Name]'
-        endif
-    else
-        "只取文件名
-        let name = fnamemodify(name, ':t')
-    endif
+	let winnr = tabpagewinnr(a:n)
+	let name = bufname(buflist[winnr - 1]) 
+	if name == ''
+		"为没有名字的文档设置个名字
+		if &buftype == 'quickfix'
+			let name = '[Quickfix List]'
+		else
+			let name = '[No Name]'
+		endif
+	else
+		"只取文件名
+		let name = fnamemodify(name, ':t')
+	endif
 
-    let label .= name
-    return label
+	let label .= name
+	return label
 endfunction
 
 function! MyTabLine()
-    let s = ''
-    for i in range(tabpagenr('$'))
-        " 选择高亮
-        let hlTab = ''
-        let select = 0 
-        if i + 1 == tabpagenr()
-            let hlTab = '%#SelectTabLine#'
-            " 设置标签页号 (用于鼠标点击)
-            let s .= hlTab . "[%#SelectPageNum#%T" . (i + 1) . hlTab
-            let select = 1
-        else
-            let hlTab = '%#NormalTabLine#'
-            " 设置标签页号 (用于鼠标点击)
-            let s .= hlTab . "[%#NormalPageNum#%T" . (i + 1) . hlTab
-        endif
+	let s = ''
+	for i in range(tabpagenr('$'))
+		" 选择高亮
+		let hlTab = ''
+		let select = 0 
+		if i + 1 == tabpagenr()
+			let hlTab = '%#SelectTabLine#'
+			" 设置标签页号 (用于鼠标点击)
+			let s .= hlTab . "[%#SelectPageNum#%T" . (i + 1) . hlTab
+			let select = 1
+		else
+			let hlTab = '%#NormalTabLine#'
+			" 设置标签页号 (用于鼠标点击)
+			let s .= hlTab . "[%#NormalPageNum#%T" . (i + 1) . hlTab
+		endif
 
-        " MyTabLabel() 提供标签
-        let s .= ' %<%{MyTabLabel(' . (i + 1) . ', ' . select . ')} '
+		" MyTabLabel() 提供标签
+		let s .= ' %<%{MyTabLabel(' . (i + 1) . ', ' . select . ')} '
 
-        "追加窗口数量
-        let wincount = tabpagewinnr(i + 1, '$')
-        if wincount > 1
-            if select == 1
-                let s .= "%#SelectWindowsNum#" . wincount
-            else
-                let s .= "%#NormalWindowsNum#" . wincount
-            endif
-        endif
-        let s .= hlTab . "]"
-    endfor
+		"追加窗口数量
+		let wincount = tabpagewinnr(i + 1, '$')
+		if wincount > 1
+			if select == 1
+				let s .= "%#SelectWindowsNum#" . wincount
+			else
+				let s .= "%#NormalWindowsNum#" . wincount
+			endif
+		endif
+		let s .= hlTab . "]"
+	endfor
 
-    " 最后一个标签页之后用 TabLineFill 填充并复位标签页号
-    let s .= '%#TabLineFill#%T'
+	" 最后一个标签页之后用 TabLineFill 填充并复位标签页号
+	let s .= '%#TabLineFill#%T'
 
-    " 右对齐用于关闭当前标签页的标签
-    if tabpagenr('$') > 1
-        let s .= '%=%#TabLine#%999XX'
-    endif
+	" 右对齐用于关闭当前标签页的标签
+	if tabpagenr('$') > 1
+		let s .= '%=%#TabLine#%999XX'
+	endif
 
-    return s
+	return s
 endfunction
 set tabline=%!MyTabLine()
 
